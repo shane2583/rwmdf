@@ -1,0 +1,48 @@
+﻿  stdafx.cpp
+  md5.cpp
+  mdf4.cpp
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdFile.h(127): error C2665: 'strrchr': none of the 2 overloads could convert all the argument types
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\string.h(529): note: could be 'char *strrchr(char *const ,const int)'
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime_string.h(73): note: or       'const char *strrchr(const char *,int)'
+  e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdFile.h(127): note: while trying to match the argument list '(M_FILENAME, char)'
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdFile.h(129): error C2665: 'strrchr': none of the 2 overloads could convert all the argument types
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\string.h(529): note: could be 'char *strrchr(char *const ,const int)'
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime_string.h(73): note: or       'const char *strrchr(const char *,int)'
+  e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdFile.h(129): note: while trying to match the argument list '(M_FILENAME, char)'
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\utf8.h(207): error C2664: 'errno_t _itoa_s(int,char *,std::size_t,int)': cannot convert argument 2 from 'TCHAR [20]' to 'char *'
+  e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\utf8.h(207): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\utf8.h(222): error C2664: 'int wsprintfW(LPWSTR,LPCWSTR,...)': cannot convert argument 2 from 'const char [3]' to 'LPCWSTR'
+  e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\utf8.h(222): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdf4.h(1844): error C3861: 'ATLTRACE': identifier not found
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdf4.h(1962): error C3861: 'ATLTRACE': identifier not found
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdf4.h(2028): error C3861: 'ATLTRACE': identifier not found
+..\asam_mdf4_lib\mdf4.cpp(70): error C3861: 'ATLTRACE': identifier not found
+..\asam_mdf4_lib\mdf4.cpp(760): error C2065: 'CTime': undeclared identifier
+..\asam_mdf4_lib\mdf4.cpp(760): error C2146: syntax error: missing ';' before identifier 't'
+..\asam_mdf4_lib\mdf4.cpp(760): error C3861: 't': identifier not found
+..\asam_mdf4_lib\mdf4.cpp(761): error C2065: 't': undeclared identifier
+..\asam_mdf4_lib\mdf4.cpp(761): error C2228: left of '.GetLocalTm' must have class/struct/union
+  ..\asam_mdf4_lib\mdf4.cpp(761): note: type is 'unknown-type'
+..\asam_mdf4_lib\mdf4.cpp(880): error C3861: 'ATLTRACE': identifier not found
+..\asam_mdf4_lib\mdf4.cpp(944): error C3861: 'ATLTRACE': identifier not found
+..\asam_mdf4_lib\mdf4.cpp(1032): warning C4838: conversion from 'unsigned __int64' to 'M_INT64' requires a narrowing conversion
+..\asam_mdf4_lib\mdf4.cpp(2693): error C3861: 'ATLTRACE': identifier not found
+..\asam_mdf4_lib\mdf4.cpp(3261): error C2664: 'void OutputDebugStringW(LPCWSTR)': cannot convert argument 1 from 'const char [33]' to 'LPCWSTR'
+  ..\asam_mdf4_lib\mdf4.cpp(3261): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+  mdFile.cpp
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdFile.h(127): error C2665: 'strrchr': none of the 2 overloads could convert all the argument types
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\string.h(529): note: could be 'char *strrchr(char *const ,const int)'
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime_string.h(73): note: or       'const char *strrchr(const char *,int)'
+  e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdFile.h(127): note: while trying to match the argument list '(M_FILENAME, char)'
+e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdFile.h(129): error C2665: 'strrchr': none of the 2 overloads could convert all the argument types
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\string.h(529): note: could be 'char *strrchr(char *const ,const int)'
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime_string.h(73): note: or       'const char *strrchr(const char *,int)'
+  e:\github\rwmdf\mdf4_lib_c++_for_linux\rwmdf\asam_mdf4_lib\mdFile.h(129): note: while trying to match the argument list '(M_FILENAME, char)'
+..\asam_mdf4_lib\mdFile.cpp(55): error C2664: 'BOOL ReadFile(HANDLE,LPVOID,DWORD,LPDWORD,LPOVERLAPPED)': cannot convert argument 4 from 'M_UINT32 *' to 'LPDWORD'
+  ..\asam_mdf4_lib\mdFile.cpp(55): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+..\asam_mdf4_lib\mdFile.cpp(59): error C3861: 'TRACE': identifier not found
+..\asam_mdf4_lib\mdFile.cpp(82): error C2664: 'BOOL WriteFile(HANDLE,LPCVOID,DWORD,LPDWORD,LPOVERLAPPED)': cannot convert argument 4 from 'M_UINT32 *' to 'LPDWORD'
+  ..\asam_mdf4_lib\mdFile.cpp(82): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+..\asam_mdf4_lib\mdFile.cpp(142): error C3861: 'TRACE': identifier not found
+  main.cpp
+  Generating Code...
