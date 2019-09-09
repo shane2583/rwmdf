@@ -43,5 +43,5 @@
 #define _MDF4_XML   0
 #define _MDF4_UTF8  1
 #define _MDF4_MD5   1
-#define _MDF4_WIN   1
+#define _MDF4_WIN   0
 #define _MDF4_1     1
