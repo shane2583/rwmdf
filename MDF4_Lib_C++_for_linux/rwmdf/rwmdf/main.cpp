@@ -1,40 +1,7 @@
 #include <QtCore/QCoreApplication>
 #include "stdafx.h"
-#include "../asam_mdf4_lib/mdf4.h"
+#include "_rwmdftypes.h"
 
-
-//class CMdf4DataGroup
-//{
-//public:
-//	CMdf4DataGroup(void)
-//	{
-//		m_iGrp = 0;
-//		m_pDataStream = NULL;
-//		m_pRF = NULL;
-//		m_dg = NULL;
-//		m_pMdf = NULL;
-//	}
-//	~CMdf4DataGroup(void)
-//	{
-//		m_pMdf = NULL; // do not free!
-//		if (m_pDataStream)
-//			delete m_pDataStream;
-//		if (m_pRF)
-//			delete m_pRF;
-//		if (m_dg)
-//			delete m_dg;
-//	}
-//	//CMdf4FileImport *m_pMdf;
-//	M4DGBlock *m_dg; // ptr auf Data Group block
-//	int m_iGrp; // group no., 1-N
-//	m4DataStream *m_pDataStream;
-//	//CReadFileMF4 *m_pRF;
-//
-//	BOOL GetRecord(M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1, M_UINT64 ix2);
-//	BOOL GetRawValueFromRecord(M4CGBlock *cg, M4CNBlock *cn, M_BYTE *pRecord, double *pValue);
-//	double GetValueFromRecord(M_BYTE *dptr, int sbit, int nbit, int nbytes, BOOL bInteger, BOOL bSigned, BOOL bMotorola, BOOL bFloat);
-//
-//};
 
 const char *StrID(M_UINT16 hdrID)
 {
@@ -157,6 +124,33 @@ void DisplayChannel(MDF4File &m4, M4CNBlock *cn, int cnt)
 	printf("      Max Range Raw = %lf\n", cn->cn_val_range_max);
 }
 
+
+BOOL GetRecord(M4DGBlock *dg, M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1, M_UINT64 ix2)
+{
+	if (!dg || !cg) 
+		return FALSE;
+
+	void *pOrgPtr = ptr;
+	M_UINT32 RecLen = (M_UINT32)cg->getRecordSize() + dg->dg_rec_id_size;
+	M_UINT64 dwPos = ix1 * RecLen;
+	M_UINT64 n = ix2 - ix1 + 1;
+
+	_ReadMF4 rmf4;
+	if (!rmf4.Open(dg, RecLen, n)) {
+		return FALSE;
+	}
+
+
+	if (!rmf4.Seek(dwPos)){
+		rmf4.Close();
+		return FALSE;
+	}
+	
+	DWORD dwSize = rmf4.Read(RecLen * n, ptr);
+	rmf4.Close();
+	
+	return TRUE;
+}
 //
 //void DisplayData(CMdf4DataGroup* pGroup, M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn)
 //{
@@ -234,13 +228,18 @@ int main(int argc, char *argv[])
 			DisplayChannelGroup(m_m4, cg, ++cg_cnt);
 
 			uint32_t cn_cnt = 0;
+
+
 			M4CNBlock *cn = (M4CNBlock *)m_m4.LoadLink(*cg, M4CGBlock::cg_cn_first, M4ID_CN);
 			while (cn) {
 				DisplayChannel(m_m4, cn, ++cn_cnt);
-
+				
 
 				cn = (M4CNBlock *)m_m4.LoadLink(*cn, M4CNBlock::cn_cn_next, M4ID_CN);
 			}
+
+			//cg_cg_next
+
 
 			cg = (M4CGBlock*)LoadLink(m_m4, cg, M4CGBlock::cg_cg_next);
 		}

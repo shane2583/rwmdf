@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\MDF4\md5.cpp">
+      <Filter>MDF4Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MDF4\mdf4.cpp">
+      <Filter>MDF4Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MDF4\mdFile.cpp">
+      <Filter>MDF4Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="FileInfo4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FindDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportMdf4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MDF4Viewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FileInfo4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FindDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportMdf4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MDF4Viewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MDF4\dynArray.h">
+      <Filter>MDF4Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MDF4\md5.h">
+      <Filter>MDF4Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MDF4\mdf4.h">
+      <Filter>MDF4Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MDF4\mdfConfig.h">
+      <Filter>MDF4Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MDF4\mdFile.h">
+      <Filter>MDF4Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MDF4\utf8.h">
+      <Filter>MDF4Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MDF4\mdfTypes.h">
+      <Filter>MDF4Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{7bbed9f4-7d79-4491-b643-c0cb7f7ff1d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MDF4Lib">
+      <UniqueIdentifier>{05675cc5-ce69-40b0-9a49-8c341917dce1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{cce297e5-f3cd-41be-a8ec-85055036bd3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{22b8e0a4-f3a4-4f4c-b70f-03dda1c0c8b0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt">
+      <Filter>MDF4Lib</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MDF4Viewer.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

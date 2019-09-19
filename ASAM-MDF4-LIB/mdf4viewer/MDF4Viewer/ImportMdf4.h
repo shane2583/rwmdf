@@ -1,8 +1,13 @@
-﻿#pragma once
+#pragma once
 
-#include "stdafx.h"
+#include "MDF4Viewer.h"
 #include <vector>
 #include "mdf4.h"
+
+typedef struct {                 /* BitFeld                      */
+  unsigned gaps:2;       /*   0: normal, 1: remove gaps, 2: duplicate files  */
+  unsigned extendrange:1;/*   min/max + 10% */
+} MDF4Flags;
 
 class CReadFile;
 class CMdf4FileImport;
@@ -31,7 +36,7 @@ public:
 	{
 		m_iBufSiz = iBufferSize;
 		m_dwBufferSize = iBufferSize * iBufCnt;
-		m_pBuffer = calloc(1, m_dwBufferSize);
+		m_pBuffer = calloc(1,m_dwBufferSize);
 		if (!m_pBuffer)
 			return FALSE;
 		m_iBufCtr = 0;
@@ -50,30 +55,30 @@ public:
 		free(m_pBuffer);
 		m_pBuffer = NULL;
 	}
-	int Seek(M_UINT64 i64Pos)
+	int Seek( __int64 i64Pos )
 	{
 		m_iBufCtr = 0;
 		if (m_pDataStream == NULL)
 			return 0;
 		return m_pDataStream->Seek(i64Pos) == i64Pos;
 	}
-	M_UINT32 Read(M_UINT32 dwSize, void *pBuffer)
+	DWORD Read( DWORD dwSize, void *pBuffer)
 	{
 		BOOL bResult;
-		M_UINT32 dwRead = 0;
-		if (m_iBufCtr++ == 0)
-		{
+    DWORD dwRead = 0; 
+    if (m_iBufCtr++ == 0)
+    {
 			bResult = m_pDataStream->Read(m_dwBufferSize, m_pBuffer) == m_dwBufferSize;
-			m_ptr = (char *)m_pBuffer;
-		}
-		else
+      m_ptr = (char *)m_pBuffer;
+    }
+    else
 		{
 			bResult = TRUE;
-			m_ptr += m_iBufSiz;
+      m_ptr += m_iBufSiz;
 		}
 		memcpy(pBuffer, m_ptr, dwSize);
-		if (m_iBufCtr >= m_nBuf)
-			m_iBufCtr = 0;
+    if (m_iBufCtr >= m_nBuf)
+      m_iBufCtr = 0;
 		if (bResult)
 			return dwSize;
 		return 0;
@@ -82,7 +87,7 @@ public:
 	m4DataStream *m_pDataStream;
 	void *m_pBuffer;
 	char *m_ptr;
-	M_UINT32 m_dwBufferSize; // full buffer
+	DWORD m_dwBufferSize; // full buffer
 	int   m_iBufSiz;      // single buffer size
 	int   m_iBufCtr;
 	int   m_nBuf;
@@ -114,7 +119,7 @@ public:
 		if (m_pCC && m_bCCalloced)
 			delete m_pCC;
 	}
-
+	
 	M4CCBlock *m_pCC;
 	BOOL       m_bCCalloced;
 	M_UINT8 m_cn_data_type;
@@ -139,7 +144,7 @@ public:
 	}
 	~CMdf4DataGroup(void)
 	{
-		m_pMdf = NULL; // do not free!
+		m_pMdf = NULL; // nicht freigeben!
 		if (m_pDataStream)
 			delete m_pDataStream;
 		if (m_pRF)
@@ -150,12 +155,13 @@ public:
 	CMdf4FileImport *m_pMdf;
 	M4DGBlock *m_dg; // ptr auf Data Group block
 	int m_iGrp; // group no., 1-N
-	m4DataStream *m_pDataStream;
+  int m_iAllGrp; // group no. of all DGs, 1-N
+  m4DataStream *m_pDataStream;
 	CReadFileMF4 *m_pRF;
 
-	BOOL GetRecord(M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1, M_UINT64 ix2);
-	BOOL GetRawValueFromRecord(M4CGBlock *cg, M4CNBlock *cn, M_BYTE *pRecord, double *pValue);
-	double GetValueFromRecord(M_BYTE *dptr, int sbit, int nbit, int nbytes, BOOL bInteger, BOOL bSigned, BOOL bMotorola, BOOL bFloat);
+	BOOL GetRecord(M4CGBlock *cg, BYTE *ptr, M_UINT64 ix1, M_UINT64 ix2);
+	BOOL GetRawValueFromRecord(M4CGBlock *cg, M4CNBlock *cn, BYTE *pRecord, double *pValue);
+	double GetValueFromRecord(BYTE *dptr, int sbit, int nbit, int nbytes, BOOL bInteger, BOOL bSigned, BOOL bMotorola, BOOL bFloat);
 
 };
 
@@ -166,25 +172,19 @@ public:
 	~CMdf4FileImport(void);
 
 	// Helpers
-	char *GetString(M4TXBlock *pTX);
-	m4Block* LoadLink(m4Block *pParent, int linkNo);
+	CString GetString(M4TXBlock *pTX);
+	m4Block* LoadLink(m4Block *pParent,int linkNo);
 
-	MDF4File m_m4;
+  MDF4File m_m4;
 	std::vector<CMdf4DataGroup*> m_vDataGroups;
 	int m_nDataGroups;
 	int m_nDataGroupsInvalid;
-	//FILETIME m_tmFileTime;
+	CString m_strPathName; // the complete path name of the file
+	FILETIME m_tmFileTime;
 	long m_datum;
 
-	// Printing on console
-	void DisplayGroup(CMdf4DataGroup* pGroup);
-	void DisplayChannelGroup(M4CGBlock *cg);
-	void DisplayChannel(M4CNBlock *cn, int n);
-	void DisplayConversion(M4CCBlock *cc);
-	void DisplayData(CMdf4DataGroup* pGroup, M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn);
-
 public:
-	BOOL ImportFile(const char *pszFileName);
+	BOOL ImportFile(LPCTSTR szFileName, LPCTSTR szUser);
 	void ReleaseFile(void);
 };
 
