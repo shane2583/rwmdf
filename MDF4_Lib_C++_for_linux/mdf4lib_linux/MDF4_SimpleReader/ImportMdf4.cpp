@@ -590,44 +590,6 @@ void CMdf4FileImport::DisplayConversion(M4CCBlock *cc)
 	}
 }
 
-void CMdf4FileImport::DisplayData(CMdf4DataGroup* pGroup, M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn)
-{
-	int iScanSize = cg->cg_data_bytes + cg->cg_inval_bytes + dg->dg_rec_id_size;
-	M_UINT8 *pScan = (M_UINT8*)calloc(1, iScanSize);
-	int n = cg->cg_cycle_count;
-	if (n > 10)
-	{
-		n = 10; // display only 10 values
-		printf("      Data (only 10 values):\n");
-	}
-	else
-		printf("      Data (%d values):\n", n);
-	for (int i = 0; i < n; i++)
-	{
-		BOOL bResult = pGroup->GetRecord(cg, pScan, i, i);
-		if (!bResult)
-			printf("        read error\n");
-		else
-		{
-			double value;
-			BOOL bNoval = pGroup->GetRawValueFromRecord(cg, cn, pScan, &value);
-			if (bNoval)
-				printf("        novalue %.15lg\n", value);
-			else
-			{
-				printf("        %20.15lg ", value);
-				CMdf4Calc * pCalc = new CMdf4Calc(cn, m_m4);
-				if (pCalc->m_pCC != NULL)
-				{
-					value = pCalc->MdfCalc(value);
-					printf("%20.15lg\n", value);
-				}
-				delete pCalc;
-			}
-		}
-	}
-}
-
 BOOL CMdf4FileImport::ImportFile(const char *szFileName)
 {
 	int i, j;
@@ -709,6 +671,43 @@ BOOL CMdf4FileImport::ImportFile(const char *szFileName)
 	return TRUE;
 }
 
+void CMdf4FileImport::DisplayData(CMdf4DataGroup* pGroup, M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn)
+{
+	int iScanSize = cg->cg_data_bytes + cg->cg_inval_bytes + dg->dg_rec_id_size;
+	M_UINT8 *pScan = (M_UINT8*)calloc(1, iScanSize);
+	int n = cg->cg_cycle_count;
+	if (n > 10)
+	{
+		n = 10; // display only 10 values
+		printf("      Data (only 10 values):\n");
+	}
+	else
+		printf("      Data (%d values):\n", n);
+	for (int i = 0; i < n; i++)
+	{
+		BOOL bResult = pGroup->GetRecord(cg, pScan, i, i);
+		if (!bResult)
+			printf("        read error\n");
+		else
+		{
+			double value;
+			BOOL bNoval = pGroup->GetRawValueFromRecord(cg, cn, pScan, &value);
+			if (bNoval)
+				printf("        novalue %.15lg\n", value);
+			else
+			{
+				printf("        %20.15lg ", value);
+				CMdf4Calc * pCalc = new CMdf4Calc(cn, m_m4);
+				if (pCalc->m_pCC != NULL)
+				{
+					value = pCalc->MdfCalc(value);
+					printf("%20.15lg\n", value);
+				}
+				delete pCalc;
+			}
+		}
+	}
+}
 
 m4Block* CMdf4FileImport::LoadLink(m4Block *pParent, int linkNo)
 {
@@ -716,7 +715,6 @@ m4Block* CMdf4FileImport::LoadLink(m4Block *pParent, int linkNo)
 	delete pParent;
 	return pResult;
 }
-
 
 void CMdf4FileImport::ReleaseFile(void)
 {
