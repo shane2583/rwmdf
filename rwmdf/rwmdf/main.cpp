@@ -1,7 +1,7 @@
 #include <QtCore/QCoreApplication>
 #include "stdafx.h"
-#include "_rwmdftypes.h"
-
+//#include "_rwmdftypes.h"
+#include "_rwmdf.h"
 
 
 /* Signed-Unsigned conversion tables */
@@ -406,18 +406,11 @@ void DisplayData(M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn)
 }
 
 
+void readMf4(char *filename) {
 
-
-int main(int argc, char *argv[])
-{
-	QCoreApplication a(argc, argv);
-
-
-	const char *filename = "D:\\TestData\\DataSpySampleDataFile.mf4";
-    //const char *filename = "/home/shane/pro/asam_mf4_lib/DataSpySampleDataFile.mf4";
 	MDF4File m_m4;
 	if (!m_m4.Open(filename))
-		return 0;
+		return;
 
 	printf("File %s\n", filename);
 
@@ -450,7 +443,7 @@ int main(int argc, char *argv[])
 			M4CNBlock *cn = (M4CNBlock *)m_m4.LoadLink(*cg, M4CGBlock::cg_cn_first, M4ID_CN);
 			while (cn) {
 				DisplayChannel(m_m4, cn, ++cn_cnt);
-				
+
 				DisplayData(dg, cg, cn);
 				cn = (M4CNBlock *)m_m4.LoadLink(*cn, M4CNBlock::cn_cn_next, M4ID_CN);
 			}
@@ -460,7 +453,25 @@ int main(int argc, char *argv[])
 
 		dg = (M4DGBlock*)m_m4.LoadLink(*dg, M4DGBlock::dg_dg_next);
 	}
+}
 
+
+int main(int argc, char *argv[])
+{
+	QCoreApplication a(argc, argv);
+
+	const char *filename = "D:\\TestData\\DataSpySampleDataFile.mf4";
+    //const char *filename = "/home/shane/pro/asam_mf4_lib/DataSpySampleDataFile.mf4";
+	_RWMDF mf4;
+	
+	mf4.open(filename);
+
+	unsigned long cnt =  mf4.get_dgs().size();
+	printf("%d",cnt);
+
+
+
+	mf4.clear_dgs();
 
 	return a.exec();
 }

@@ -5,33 +5,38 @@
 using namespace std;
 
 
+typedef vector<DG*>	ary_dgs;
 class _RWMDF
 {
-	typedef vector<M4DGBlock*>	ary_dgs;
 
 public:
 	_RWMDF();
 	~_RWMDF();
 
-
 private:
 	MDF4File	m_m4;
 	M4HDBlock	*m_pHdr;
-	ary_dgs		mDataGrps;
+	ary_dgs		m_dgs;
 
 	M4DGBlock* get_dg(unsigned long index);
 	unsigned long get_dg_count();
-	long get_dgroups(ary_dgs & dgs);
+	unsigned long load_dgs();
 
+
+	m4Block* LoadLink(MDF4File &m4, m4Block *pParent, int linkNo);
 public:
 	bool open(const char *filename);
 	
+	//get_mdf_info();
+
 	CG* get_cg(unsigned long index);
 	unsigned long get_cg_count();
 
 	CN* get_cn(const char* cn_name);
 	unsigned long get_cn_count();
 
+	ary_dgs& get_dgs();
+	void clear_dgs();
 
 };
 

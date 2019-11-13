@@ -1,7 +1,11 @@
 #pragma once
 
 #include "stdafx.h"
+#include <vector>
 #include "mdf4.h"
+
+
+using namespace std;
 
 
 #ifndef WIN32
@@ -97,45 +101,137 @@ struct HeaderBlock {
 
 
 class DG;
+class CG;
 
 class CN {
 public:
-	CN() {
-
+	CN(M4CNBlock *_cn) {
+		m_block = _cn;
 	}
 	~CN() {
-
+		//clear();
 	}
+
+	M4CNBlock* get_block() {
+		return m_block;
+	}
+
+	CG* get_cg() const {
+		return m_cg;
+	}
+
+	void set_cg(CG* _cg) {
+		m_cg = _cg;
+	}
+
 
 protected:
 private:
+	M4CNBlock	*m_block;
+	CG			*m_cg;
+
+	void clear() {
+		if (m_block) {
+			delete m_block;
+			m_block = nullptr;
+		}
+	}
 };
 
 
 class CG {
-public:
-	CG() {
 
+	typedef	vector<CN*>	ary_cns;
+
+public:
+	CG(M4CGBlock *_cg) {
+		m_block = _cg;
 	}
 	~CG() {
-
+		clear();
 	}
+
+	M4CGBlock* get_block() const {
+		return m_block;
+	}
+
+	DG* get_dg() const {
+		return m_dg;
+	}
+	void set_dg(DG* _dg) {
+		m_dg = _dg;
+	}
+
+	void add_cn(CN* _cn) {
+		if (_cn) {
+			_cn->set_cg(this);
+			m_cns.push_back(_cn);
+		}
+	}
+
 
 protected:
 private:
+	M4CGBlock	*m_block;
+	DG*			m_dg;
+	ary_cns		m_cns;
+
+	void clear() {
+		//if (m_block) {
+		//	delete m_block;
+		//	m_block = nullptr;
+		//}
+		for (auto &cn : m_cns) {
+			if (cn) {
+				delete cn;
+				cn = nullptr;
+			}
+		}
+		m_cns.clear();
+	}
 };
+
 
 class DG {
+	
+	typedef vector<CG*>	ary_cgs;
 
 public:
-	DG() {
-
+	DG(M4DGBlock* _dg) {
+		m_block = _dg;
 	}
 	~DG() {
+		clear();
+	}
 
+	M4DGBlock* get_dg() const {
+		return m_block;
+	}
+
+	void add_cg(CG* _cg) {
+		if (_cg) {
+			_cg->set_dg(this);
+			m_cgs.push_back(_cg);
+		}
 	}
 
 protected:
 private:
-	
+	M4DGBlock * m_block;
+	ary_cgs		m_cgs;
+
+	void clear() {
+		//if (m_block) {
+		//	delete m_block;
+		//	m_block = nullptr;
+		//}
+		for (auto &cg : m_cgs) {
+			if (cg) {
+				delete cg;
+				cg = nullptr;
+			}	
+		}
+		m_cgs.clear();
+	}
 };
+
