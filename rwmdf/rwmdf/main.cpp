@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
 	mf4.open(filename);
 
 	unsigned long cnt =  mf4.get_dgs().size();
-	printf("%d",cnt);
+	printf("channel count: %d\n",cnt);
 
 
 

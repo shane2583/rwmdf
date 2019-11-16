@@ -38,6 +38,8 @@ public:
 	ary_dgs& get_dgs();
 	void clear_dgs();
 
+	BOOL get_record(M4DGBlock *dg, M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1, M_UINT64 ix2);
+
 };
 
 /*
