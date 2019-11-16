@@ -639,10 +639,10 @@ BOOL M4MDBlock::CreateInstance(void)
 {
   HRESULT hr = S_FALSE;
   hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument60) );
-  hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument30) );
-  hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument40) );
-  hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument26) );
-  hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument) );
+  //hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument30) );
+  //hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument40) );
+  //hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument26) );
+  //hr = (hr == S_OK) ? hr : m_Doc.CreateInstance( __uuidof(MSXML2::DOMDocument) );
   if( hr != S_OK ) 
   {
     // did u CoInitialize ?

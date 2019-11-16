@@ -1065,17 +1065,17 @@ void CInfo4Tree::FillXMLTree(CTreeCtrl &Tree, LPCTSTR pszXML)
   MSXML2::IXMLDOMDocument3Ptr doc;
 	MSXML2::IXMLDOMNodeListPtr pnl;
 	MSXML2::IXMLDOMNodePtr pNode = NULL;
-  HRESULT hr = S_FALSE;
-  hr = (hr == S_OK) ? hr : doc.CreateInstance( __uuidof(MSXML2::DOMDocument60) );
-  hr = (hr == S_OK) ? hr : doc.CreateInstance( __uuidof(MSXML2::DOMDocument30) );
-  hr = (hr == S_OK) ? hr : doc.CreateInstance( __uuidof(MSXML2::DOMDocument40) );
-  hr = (hr == S_OK) ? hr : doc.CreateInstance( __uuidof(MSXML2::DOMDocument26) );
-  hr = (hr == S_OK) ? hr : doc.CreateInstance( __uuidof(MSXML2::DOMDocument) );
-  if( hr != S_OK ) 
-  {
-    ATLASSERT(FALSE); // did u CoInitialize ?
-    return;
-  }
+	HRESULT hr = S_FALSE;
+	hr = (hr == S_OK) ? hr : doc.CreateInstance(__uuidof(MSXML2::DOMDocument60));
+	//hr = (hr == S_OK) ? hr : doc.CreateInstance(__uuidof(MSXML2::DOMDocument30));
+	//hr = (hr == S_OK) ? hr : doc.CreateInstance(__uuidof(MSXML2::DOMDocument40));
+	//hr = (hr == S_OK) ? hr : doc.CreateInstance(__uuidof(MSXML2::DOMDocument26));
+	//hr = (hr == S_OK) ? hr : doc.CreateInstance( __uuidof(MSXML2::DOMDocument) );
+	if (hr != S_OK)
+	{
+		ATLASSERT(FALSE); // did u CoInitialize ?
+		return;
+	}
 	try
 	{
 		bstr_t bstrXML(pszXML);
