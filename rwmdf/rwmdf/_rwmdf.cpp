@@ -94,8 +94,8 @@ m4Block* _RWMDF::LoadLink(MDF4File &m4, m4Block *pParent, int linkNo)
 	return pResult;
 }
 
-unsigned long _RWMDF::load_dgs() {
-
+unsigned long _RWMDF::load_dgs() 
+{
 	M4DGBlock *dg_block = (M4DGBlock*)m_m4.LoadLink(*m_pHdr, M4HDBlock::hd_dg_first);
 	while (dg_block) {
 		DG* dg = new DG(dg_block);
@@ -123,11 +123,13 @@ unsigned long _RWMDF::load_dgs() {
 	return m_dgs.size();
 }
 
-ary_dgs& _RWMDF::get_dgs() {
+ary_dgs& _RWMDF::get_dgs() 
+{
 	return m_dgs;
 }
 
-void _RWMDF::clear_dgs() {
+void _RWMDF::clear_dgs() 
+{
 	for (auto &dg: m_dgs) {
 		if (dg) {
 			delete dg;
@@ -135,7 +137,6 @@ void _RWMDF::clear_dgs() {
 		}
 	}
 }
-
 
 BOOL _RWMDF::get_record(M4DGBlock *dg, M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1, M_UINT64 ix2)
 {
@@ -151,7 +152,6 @@ BOOL _RWMDF::get_record(M4DGBlock *dg, M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1,
 	if (!rmf4.Open(dg, RecLen, n)) {
 		return FALSE;
 	}
-
 
 	if (!rmf4.Seek(dwPos)) {
 		rmf4.Close();
