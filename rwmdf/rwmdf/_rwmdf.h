@@ -15,6 +15,7 @@ public:
 
 private:
 	MDF4File	m_m4;
+	//mdfFileId	*m_pFileId;
 	M4HDBlock	*m_pHdr;
 	ary_dgs		m_dgs;
 
@@ -22,12 +23,17 @@ private:
 	unsigned long get_dg_count();
 	unsigned long load_dgs();
 
-
 	m4Block* LoadLink(MDF4File &m4, m4Block *pParent, int linkNo);
 public:
 	bool open(const char *filename);
 	
-	//get_mdf_info();
+	mdfFileId* get_fid() {
+		return m_m4.GetIdBlk();
+	}
+
+	M4HDBlock* get_hdr() {
+		return m_m4.GetHdr();
+	}
 
 	CG* get_cg(unsigned long index);
 	unsigned long get_cg_count();
@@ -39,7 +45,6 @@ public:
 	void clear_dgs();
 
 	BOOL get_record(M4DGBlock *dg, M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1, M_UINT64 ix2);
-
 };
 
 /*

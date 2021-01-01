@@ -12,26 +12,18 @@ _RWMDF::~_RWMDF()
 }
 
 
-
-
 bool _RWMDF::open(const char *filename) {
 	if (!m_m4.Open(filename))
 		return false;
-	//printf("File %s\n", filename);
+	printf("File Name: %s\n", filename);
 
-	// ID Block
-	mdfFileId *pId = m_m4.GetIdBlk();
-	printf("id_file  = %s\n", pId->id_file);
-	printf("id_vers  = %s\n", pId->id_vers);
-	printf("id_prog  = %s\n", pId->id_prog);
-	printf("id_order = %s\n", pId->id_order == 0 ? "Intel" : "Motorola");
-	printf("id_float = %s\n", pId->id_float == 0 ? "IEEE 754" : "(unsupported)");
-	printf("id_ver   = %d\n", (int)pId->id_ver);
+	//// get mdf id block.
+	//m_pFileId = m_m4.GetIdBlk();
 
-	// Show time: don't know how to handle local/GMT time under Linux
+	// get infor of the mdf file head.
 	m_pHdr = m_m4.GetHdr();
-	printf("Time: %d\n", (long)(m_pHdr->hd_start_time.time_ns / 1000000000));
 
+	// load channel group from the mdf.
 	load_dgs();
 
 	return true;
@@ -98,18 +90,19 @@ unsigned long _RWMDF::load_dgs()
 {
 	M4DGBlock *dg_block = (M4DGBlock*)m_m4.LoadLink(*m_pHdr, M4HDBlock::hd_dg_first);
 	while (dg_block) {
-		DG* dg = new DG(dg_block);
+		DG* dg = new DG(dg_block, &m_m4);
 
 		M4CGBlock *cg_block = (M4CGBlock*)m_m4.LoadLink(*dg_block, M4DGBlock::dg_cg_first);
 		while (cg_block) {
-			CG* cg = new CG(cg_block);
+			CG* cg = new CG(cg_block, dg);
 
-			M4CNBlock *cn_block = (M4CNBlock *)m_m4.LoadLink(*cg->get_block(), M4CGBlock::cg_cn_first, M4ID_CN);
+			M4CNBlock *cn_block = (M4CNBlock*)m_m4.LoadLink(*cg->get_block(), M4CGBlock::cg_cn_first, M4ID_CN);
+			unsigned long cnt = 0;
 			while (cn_block) {
-				CN* cn = new CN(cn_block);
+				CN* cn = new CN(cn_block, cg);
 				cg->add_cn(cn);
 
-				cn_block = (M4CNBlock *)m_m4.LoadLink(*cn_block, M4CNBlock::cn_cn_next, M4ID_CN);
+				cn_block = (M4CNBlock*)m_m4.LoadLink(*cn_block, M4CNBlock::cn_cn_next, M4ID_CN);
 			}
 
 			dg->add_cg(cg);

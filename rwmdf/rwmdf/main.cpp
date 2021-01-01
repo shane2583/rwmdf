@@ -380,6 +380,7 @@ void DisplayData(M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn)
 	}
 	else
 		printf("      Data (%d values):\n", n);
+
 	for (int i = 0; i < n; i++)
 	{
 		BOOL bResult = GetRecord(dg, cg, pScan, i, i);
@@ -460,18 +461,34 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
 
-	const char *filename = "D:\\TestData\\DataSpySampleDataFile.mf4";
+	char *filename = "D:\\source\\rwmdf\\DataSpySampleDataFile.mf4";
     //const char *filename = "/home/shane/pro/asam_mf4_lib/DataSpySampleDataFile.mf4";
-	_RWMDF mf4;
-	
-	mf4.open(filename);
 
-	unsigned long cnt =  mf4.get_dgs().size();
-	printf("channel count: %d\n",cnt);
+	_RWMDF mf4;
+	//mf4.open(filename);
+
+	//// ID Block
+	//mdfFileId* pId = mf4.get_fid();
+	//printf("id_file  = %s\n", pId->id_file);
+	//printf("id_vers  = %s\n", pId->id_vers);
+	//printf("id_prog  = %s\n", pId->id_prog);
+	//printf("id_order = %s\n", pId->id_order == 0 ? "Intel" : "Motorola");
+	//printf("id_float = %s\n", pId->id_float == 0 ? "IEEE 754" : "(unsupported)");
+	//printf("id_ver   = %d\n", (int)pId->id_ver);
+
+	//// Show time: don't know how to handle local/GMT time under Linux
+	//M4HDBlock* pHdr = mf4.get_hdr();
+	//printf("Time: %d\n", (long)(pHdr->hd_start_time.time_ns / 1000000000));
+
+	//unsigned long cnt =  mf4.get_dgs().size();
+	//printf("Channel Count: %d\n",cnt);
+
+
 
 
 
 	mf4.clear_dgs();
+	readMf4(filename);
 
 	return a.exec();
 }

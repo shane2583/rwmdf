@@ -105,8 +105,9 @@ class CG;
 
 class CN {
 public:
-	CN(M4CNBlock *_cn) {
+	CN(M4CNBlock *_cn, CG *_cg) {
 		m_block = _cn;
+		m_cg = _cg;
 	}
 	~CN() {
 		//clear();
@@ -124,11 +125,19 @@ public:
 		m_cg = _cg;
 	}
 
+	char* get_cn_tx_name() {
+
+	}
+
+	char* get_cn_md_unit() {
+
+	}
 
 protected:
 private:
-	M4CNBlock	*m_block;
-	CG			*m_cg;
+	M4CNBlock		*m_block;
+	CG				*m_cg;
+	unsigned long	m_idx;
 
 	void clear() {
 		if (m_block) {
@@ -144,8 +153,9 @@ class CG {
 	typedef	vector<CN*>	ary_cns;
 
 public:
-	CG(M4CGBlock *_cg) {
+	CG(M4CGBlock *_cg, DG* _dg) {
 		m_block = _cg;
+		m_dg = _dg;
 	}
 	~CG() {
 		clear();
@@ -158,13 +168,14 @@ public:
 	DG* get_dg() const {
 		return m_dg;
 	}
-	void set_dg(DG* _dg) {
-		m_dg = _dg;
-	}
+
+	//void set_dg(DG* _dg) {
+	//	m_dg = _dg;
+	//}
 
 	void add_cn(CN* _cn) {
 		if (_cn) {
-			_cn->set_cg(this);
+			//_cn->set_cg(this);
 			m_cns.push_back(_cn);
 		}
 	}
@@ -173,7 +184,7 @@ public:
 protected:
 private:
 	M4CGBlock	*m_block;
-	DG*			m_dg;
+	DG			*m_dg;
 	ary_cns		m_cns;
 
 	void clear() {
@@ -197,8 +208,9 @@ class DG {
 	typedef vector<CG*>	ary_cgs;
 
 public:
-	DG(M4DGBlock* _dg) {
+	DG(M4DGBlock* _dg, MDF4File* _m4) {
 		m_block = _dg;
+		m_m4 = _m4;
 	}
 	~DG() {
 		clear();
@@ -208,16 +220,21 @@ public:
 		return m_block;
 	}
 
+	MDF4File* get_mdf4_file() const {
+		return m_m4;
+	}
+
 	void add_cg(CG* _cg) {
 		if (_cg) {
-			_cg->set_dg(this);
+			//_cg->set_dg(this);
 			m_cgs.push_back(_cg);
 		}
 	}
 
 protected:
 private:
-	M4DGBlock * m_block;
+	M4DGBlock*	m_block;
+	MDF4File*	m_m4;
 	ary_cgs		m_cgs;
 
 	void clear() {
