@@ -146,27 +146,27 @@ void DisplayGroup(MDF4File &m4, M4DGBlock* pDG, uint32_t cnt)
 
 void DisplayChannelGroup(MDF4File &m4, M4CGBlock *cg, uint32_t cnt)
 {
-	char *p = " ";
-	printf("  Channel Group:\n");
-	printf("    %d Channel        = 0x%llX\n", cnt, cg->getLink(M4CGBlock::cg_cn_first));
-	M4TXBlock *tx = (M4TXBlock *)m4.LoadLink(*cg, M4CGBlock::cg_tx_acq_name);
-	if (tx) {
-		p = GetString(tx);
-		delete tx;
-	}
-	printf("    Acquisition Name   = %s\n", p);
+	//char *p = " ";
+	//printf("  Channel Group:\n");
+	//printf("    %d Channel        = 0x%llX\n", cnt, cg->getLink(M4CGBlock::cg_cn_first));
+	//M4TXBlock *tx = (M4TXBlock *)m4.LoadLink(*cg, M4CGBlock::cg_tx_acq_name);
+	//if (tx) {
+	//	p = GetString(tx);
+	//	delete tx;
+	//}
+	//printf("    Acquisition Name   = %s\n", p);
 
-	p = " ";
-	M4SIBlock *si = (M4SIBlock *)m4.LoadLink(*cg, M4CGBlock::cg_si_acq_source);
-	if (si) {
-		tx = (M4TXBlock *)m4.LoadLink(*si, M4SIBlock::si_tx_name);
-		if (tx) {
-			p = GetString(tx);
-			delete tx;
-		}
-		delete si;
-	}
-	printf("    Acquisition Source = %s\n", p);
+	//p = " ";
+	//M4SIBlock *si = (M4SIBlock *)m4.LoadLink(*cg, M4CGBlock::cg_si_acq_source);
+	//if (si) {
+	//	tx = (M4TXBlock *)m4.LoadLink(*si, M4SIBlock::si_tx_name);
+	//	if (tx) {
+	//		p = GetString(tx);
+	//		delete tx;
+	//	}
+	//	delete si;
+	//}
+	//printf("    Acquisition Source = %s\n", p);
 	printf("    Record ID          = %llu\n", cg->cg_record_id);
 	printf("    Cycle Count        = %llu\n", cg->cg_cycle_count);
 	printf("    Data Bytes         = %lu\n", cg->cg_data_bytes);
@@ -367,7 +367,6 @@ BOOL GetRawValueFromRecord(M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn, M_BYTE *
 	return bIsNoval;
 }
 
-
 void DisplayData(M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn)
 {
 	int iScanSize = cg->cg_data_bytes + cg->cg_inval_bytes + dg->dg_rec_id_size;
@@ -443,9 +442,9 @@ void readMf4(char *filename) {
 			uint32_t cn_cnt = 0;
 			M4CNBlock *cn = (M4CNBlock *)m_m4.LoadLink(*cg, M4CGBlock::cg_cn_first, M4ID_CN);
 			while (cn) {
-				DisplayChannel(m_m4, cn, ++cn_cnt);
+				//DisplayChannel(m_m4, cn, ++cn_cnt);
 
-				DisplayData(dg, cg, cn);
+				//DisplayData(dg, cg, cn);
 				cn = (M4CNBlock *)m_m4.LoadLink(*cn, M4CNBlock::cn_cn_next, M4ID_CN);
 			}
 
@@ -465,7 +464,7 @@ int main(int argc, char *argv[])
     //const char *filename = "/home/shane/pro/asam_mf4_lib/DataSpySampleDataFile.mf4";
 
 	_RWMDF mf4;
-	//mf4.open(filename);
+	mf4.open(filename);
 
 	//// ID Block
 	//mdfFileId* pId = mf4.get_fid();
@@ -483,12 +482,41 @@ int main(int argc, char *argv[])
 	//unsigned long cnt =  mf4.get_dgs().size();
 	//printf("Channel Count: %d\n",cnt);
 
+	for (DG* dg : mf4.get_dgs()) {
+		MDF4File* m4file = dg->get_mdf4_file();
 
+		for (auto &cg : dg->get_cgs()) {
 
+			M4CGBlock *cgblk = cg->get_block();
+			printf("    Record ID          = %llu\n", cgblk->cg_record_id);
+			printf("    Cycle Count        = %llu\n", cgblk->cg_cycle_count);
+			printf("    Data Bytes         = %lu\n", cgblk->cg_data_bytes);
+			printf("    Invalid Bytes      = %lu\n", cgblk->cg_inval_bytes);
 
+			for (CN* cn : cg->get_cns()) {
+
+				M4CNBlock* cnblk = cn->get_block();
+				char* name = cn->get_cn_tx(M4CNBlock::cn_tx_name);
+				printf("      Channel Name = %s\n", name);
+				delete name;
+				char* unit = cn->get_cn_tx(M4CNBlock::cn_md_unit);
+				printf("      Unit = %s\n", unit);
+				delete unit;
+				printf("      Channel Type = %lu\n", (unsigned int)cnblk->cn_type);
+				printf("      Data Type = %lu\n", (unsigned int)cnblk->cn_data_type);
+				printf("      Bit Offset = %lu\n", (unsigned int)cnblk->cn_bit_offset);
+				printf("      Byte Offset = %lu\n", (unsigned int)cnblk->cn_byte_offset);
+				printf("      Bit Count = %lu\n", (unsigned int)cnblk->cn_bit_count);
+				printf("      Flags = 0x%lX\n", (unsigned int)cnblk->cn_flags);
+				printf("      Inval. Bit Pos = %lu\n", cnblk->cn_inval_bit_pos);
+				printf("      Min Range Raw = %lf\n", cnblk->cn_val_range_min);
+				printf("      Max Range Raw = %lf\n", cnblk->cn_val_range_max);
+			}
+		}
+	}
 
 	mf4.clear_dgs();
-	readMf4(filename);
+	//readMf4(filename);
 
 	return a.exec();
 }

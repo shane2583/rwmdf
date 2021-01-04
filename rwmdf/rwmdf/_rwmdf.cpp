@@ -92,12 +92,11 @@ unsigned long _RWMDF::load_dgs()
 	while (dg_block) {
 		DG* dg = new DG(dg_block, &m_m4);
 
-		M4CGBlock *cg_block = (M4CGBlock*)m_m4.LoadLink(*dg_block, M4DGBlock::dg_cg_first);
+		M4CGBlock *cg_block = (M4CGBlock*)m_m4.LoadLink(*dg_block, M4DGBlock::dg_cg_first); 
 		while (cg_block) {
 			CG* cg = new CG(cg_block, dg);
 
 			M4CNBlock *cn_block = (M4CNBlock*)m_m4.LoadLink(*cg->get_block(), M4CGBlock::cg_cn_first, M4ID_CN);
-			unsigned long cnt = 0;
 			while (cn_block) {
 				CN* cn = new CN(cn_block, cg);
 				cg->add_cn(cn);
@@ -106,7 +105,8 @@ unsigned long _RWMDF::load_dgs()
 			}
 
 			dg->add_cg(cg);
-			cg_block = (M4CGBlock*)LoadLink(m_m4, cg_block, M4CGBlock::cg_cg_next);
+			//cg_block = (M4CGBlock*)LoadLink(m_m4, cg_block, M4CGBlock::cg_cg_next);
+			cg_block = (M4CGBlock*)m_m4.LoadLink(*cg_block, M4CGBlock::cg_cg_next);
 		}
 
 		dg_block = (M4DGBlock*)m_m4.LoadLink(*dg_block, M4DGBlock::dg_dg_next);

@@ -94,114 +94,13 @@ public:
 	int   m_nBuf;
 };
 
-
 struct HeaderBlock {
 
 };
 
 
-class DG;
+class CN;
 class CG;
-
-class CN {
-public:
-	CN(M4CNBlock *_cn, CG *_cg) {
-		m_block = _cn;
-		m_cg = _cg;
-	}
-	~CN() {
-		//clear();
-	}
-
-	M4CNBlock* get_block() {
-		return m_block;
-	}
-
-	CG* get_cg() const {
-		return m_cg;
-	}
-
-	void set_cg(CG* _cg) {
-		m_cg = _cg;
-	}
-
-	char* get_cn_tx_name() {
-
-	}
-
-	char* get_cn_md_unit() {
-
-	}
-
-protected:
-private:
-	M4CNBlock		*m_block;
-	CG				*m_cg;
-	unsigned long	m_idx;
-
-	void clear() {
-		if (m_block) {
-			delete m_block;
-			m_block = nullptr;
-		}
-	}
-};
-
-
-class CG {
-
-	typedef	vector<CN*>	ary_cns;
-
-public:
-	CG(M4CGBlock *_cg, DG* _dg) {
-		m_block = _cg;
-		m_dg = _dg;
-	}
-	~CG() {
-		clear();
-	}
-
-	M4CGBlock* get_block() const {
-		return m_block;
-	}
-
-	DG* get_dg() const {
-		return m_dg;
-	}
-
-	//void set_dg(DG* _dg) {
-	//	m_dg = _dg;
-	//}
-
-	void add_cn(CN* _cn) {
-		if (_cn) {
-			//_cn->set_cg(this);
-			m_cns.push_back(_cn);
-		}
-	}
-
-
-protected:
-private:
-	M4CGBlock	*m_block;
-	DG			*m_dg;
-	ary_cns		m_cns;
-
-	void clear() {
-		//if (m_block) {
-		//	delete m_block;
-		//	m_block = nullptr;
-		//}
-		for (auto &cn : m_cns) {
-			if (cn) {
-				delete cn;
-				cn = nullptr;
-			}
-		}
-		m_cns.clear();
-	}
-};
-
 
 class DG {
 	
@@ -216,7 +115,7 @@ public:
 		clear();
 	}
 
-	M4DGBlock* get_dg() const {
+	M4DGBlock* get_block() const {
 		return m_block;
 	}
 
@@ -224,9 +123,12 @@ public:
 		return m_m4;
 	}
 
+	ary_cgs& get_cgs() {
+		return m_cgs;
+	}
+
 	void add_cg(CG* _cg) {
 		if (_cg) {
-			//_cg->set_dg(this);
 			m_cgs.push_back(_cg);
 		}
 	}
@@ -238,10 +140,10 @@ private:
 	ary_cgs		m_cgs;
 
 	void clear() {
-		//if (m_block) {
-		//	delete m_block;
-		//	m_block = nullptr;
-		//}
+		if (m_block) {
+			delete m_block;
+			m_block = nullptr;
+		}
 		for (auto &cg : m_cgs) {
 			if (cg) {
 				delete cg;
@@ -252,3 +154,114 @@ private:
 	}
 };
 
+
+class CG {
+	
+	typedef	vector<CN*>	ary_cns;
+	
+public:
+	CG(M4CGBlock *_cg, DG* _dg) {
+		m_block = _cg;
+		m_dg = _dg;
+	}
+	~CG() {
+		clear();
+	}
+	
+	M4CGBlock* get_block() const {
+		return m_block;
+	}
+	
+	DG* get_dg() const {
+		return m_dg;
+	}
+	
+	ary_cns& get_cns(){
+		return m_cns;
+	}
+
+	void add_cn(CN* _cn) {
+		if (_cn) {
+			m_cns.push_back(_cn);
+		}
+	}
+	
+protected:
+private:
+	M4CGBlock	*m_block;
+	DG			*m_dg;
+	ary_cns		m_cns;
+	
+	void clear() {
+		if (m_block) {
+			delete m_block;
+			m_block = nullptr;
+		}
+		for (auto &cn : m_cns) {
+			if (cn) {
+				delete cn;
+				cn = nullptr;
+			}
+		}
+		m_cns.clear();
+	}
+};
+
+
+class CN {
+public:
+	CN(M4CNBlock* _cn, CG* _cg) {
+		m_block = _cn;
+		m_cg = _cg;
+	}
+	~CN() {
+		clear();
+	}
+
+	M4CNBlock* get_block() {
+		return m_block;
+	}
+
+	CG* get_cg() const {
+		return m_cg;
+	}
+
+	char* get_cn_tx(unsigned int linkNo) {
+		if (m_cg) {
+			char* ptx = nullptr;
+			MDF4File* m4 = m_cg->get_dg()->get_mdf4_file();
+			M4TXBlock* tx = (M4TXBlock*)m4->LoadLink(*m_block, linkNo);
+			//if (tx) {
+			//	ptx = get_string(tx);
+			//	delete tx;
+			//}
+			ptx = get_string(tx);
+			delete tx;
+			return ptx;
+		}
+	}
+
+protected:
+private:
+	M4CNBlock*	m_block;
+	CG*			m_cg;
+	//unsigned long	m_idx;
+
+	char* get_string(M4TXBlock* ptx) {
+		char* pBuf = new char[4096];
+		memset(pBuf, 0, 4096);
+		if (ptx) {
+			const unsigned char* t = ptx->m_utf8.data();
+			//utf8in in(ptx->m_utf8.data());
+			strncpy(pBuf, (char*)t, 4095);
+		}
+		return pBuf;
+	}
+
+	void clear() {
+		if (m_block) {
+			delete m_block;
+			m_block = nullptr;
+		}
+	}
+};
