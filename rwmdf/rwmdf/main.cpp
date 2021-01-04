@@ -1,96 +1,8 @@
 #include <QtCore/QCoreApplication>
 #include "stdafx.h"
-//#include "_rwmdftypes.h"
 #include "_rwmdf.h"
 
 
-/* Signed-Unsigned conversion tables */
-static M_UINT32 signed_max[33] = {
-	0x00000000L, /* Gibts nicht */
-	0x00000001UL - 1UL,  0x00000002UL - 1UL,  0x00000004UL - 1UL,  0x00000008UL - 1UL,  //lint !e778 (Info -- Constant expression evaluates to 0 in operation '-')
-	0x00000010UL - 1UL,  0x00000020UL - 1UL,  0x00000040UL - 1UL,  0x00000080UL - 1UL,
-	0x00000100UL - 1UL,  0x00000200UL - 1UL,  0x00000400UL - 1UL,  0x00000800UL - 1UL,
-	0x00001000UL - 1UL,  0x00002000UL - 1UL,  0x00004000UL - 1UL,  0x00008000UL - 1UL,
-	0x00010000UL - 1UL,  0x00020000UL - 1UL,  0x00040000UL - 1UL,  0x00080000UL - 1UL,
-	0x00100000UL - 1UL,  0x00200000UL - 1UL,  0x00400000UL - 1UL,  0x00800000UL - 1UL,
-	0x01000000UL - 1UL,  0x02000000UL - 1UL,  0x04000000UL - 1UL,  0x08000000UL - 1UL,
-	0x10000000UL - 1UL,  0x20000000UL - 1UL,  0x40000000UL - 1UL,  0x80000000UL - 1UL
-};
-M_UINT32 get_signed_max(int idx)
-{
-	if (idx >= 0 && idx < 33)
-		return signed_max[idx];
-	return 0;
-}
-static M_UINT32 signed_sub[33] = {
-	0x00000000UL, /* Gibts nicht */
-	0x00000002UL,  0x00000004UL,  0x00000008UL,  0x00000010UL,
-	0x00000020UL,  0x00000040UL,  0x00000080UL,  0x00000100UL,
-	0x00000200UL,  0x00000400UL,  0x00000800UL,  0x00001000UL,
-	0x00002000UL,  0x00004000UL,  0x00008000UL,  0x00010000UL,
-	0x00020000UL,  0x00040000UL,  0x00080000UL,  0x00100000UL,
-	0x00200000UL,  0x00400000UL,  0x00800000UL,  0x01000000UL,
-	0x02000000UL,  0x04000000UL,  0x08000000UL,  0x10000000UL,
-	0x20000000UL,  0x40000000UL,  0x80000000UL,  0x00000000UL
-};
-M_UINT32 get_signed_sub(int idx)
-{
-	if (idx >= 0 && idx < 33)
-		return signed_sub[idx];
-	return 0;
-}
-/*
-static BYTE byte_mask[9] = {
-0x00,0x01,0x03,0x07,0x0f,0x1f,0x3f,0x7f,
-0xff
-};
-*/
-static M_UINT32 dword_mask[33] = {
-	0x00000000L,0x00000001L,0x00000003L,0x00000007L,0x0000000fL,0x0000001fL,0x0000003fL,0x0000007fL,
-	0x000000ffL,0x000001ffL,0x000003ffL,0x000007ffL,0x00000fffL,0x00001fffL,0x00003fffL,0x00007fffL,
-	0x0000ffffL,0x0001ffffL,0x0003ffffL,0x0007ffffL,0x000fffffL,0x001fffffL,0x003fffffL,0x007fffffL,
-	0x00ffffffL,0x01ffffffL,0x03ffffffL,0x07ffffffL,0x0fffffffL,0x1fffffffL,0x3fffffffL,0x7fffffffL,
-	0xffffffffL
-};
-M_UINT32 get_dword_mask(int idx)
-{
-	if (idx >= 0 && idx < 33)
-		return dword_mask[idx];
-	return 0;
-}
-//lint -e799 (Info -- numerical constant '0x00ffffffffffffff' larger than unsigned long)
-
-static M_UINT64 i64_mask[65] = {
-	0x0000000000000000,0x0000000000000001,0x0000000000000003,0x0000000000000007,
-	0x000000000000000f,0x000000000000001f,0x000000000000003f,0x000000000000007f,
-	0x00000000000000ff,0x00000000000001ff,0x00000000000003ff,0x00000000000007ff,
-	0x0000000000000fff,0x0000000000001fff,0x0000000000003fff,0x0000000000007fff,
-	0x000000000000ffff,0x000000000001ffff,0x000000000003ffff,0x000000000007ffff,
-	0x00000000000fffff,0x00000000001fffff,0x00000000003fffff,0x00000000007fffff,
-	0x0000000000ffffff,0x0000000001ffffff,0x0000000003ffffff,0x0000000007ffffff,
-	0x000000000fffffff,0x000000001fffffff,0x000000003fffffff,0x000000007fffffff,
-	0x00000000ffffffff,0x00000001ffffffff,0x00000003ffffffff,0x00000007ffffffff,
-	0x0000000fffffffff,0x0000001fffffffff,0x0000003fffffffff,0x0000007fffffffff,
-	0x000000ffffffffff,0x000001ffffffffff,0x000003ffffffffff,0x000007ffffffffff,
-	0x00000fffffffffff,0x00001fffffffffff,0x00003fffffffffff,0x00007fffffffffff,
-	0x0000ffffffffffff,0x0001ffffffffffff,0x0003ffffffffffff,0x0007ffffffffffff,
-	0x000fffffffffffff,0x001fffffffffffff,0x003fffffffffffff,0x007fffffffffffff,
-	0x00ffffffffffffff,0x01ffffffffffffff,0x03ffffffffffffff,0x07ffffffffffffff,
-	0x0fffffffffffffff,0x1fffffffffffffff,0x3fffffffffffffff,0x7fffffffffffffff,
-	0xffffffffffffffff
-};
-M_UINT64 get_i64_mask(int idx)
-{
-	if (idx >= 0 && idx < 65)
-		return i64_mask[idx];
-	return 0;
-}
-
-void MovAndSwap(M_BYTE *pVal, M_BYTE *pDst, int nBytes)
-{
-	pDst += nBytes;
-	while (nBytes--) *--pDst = *pVal++;
-}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -146,27 +58,27 @@ void DisplayGroup(MDF4File &m4, M4DGBlock* pDG, uint32_t cnt)
 
 void DisplayChannelGroup(MDF4File &m4, M4CGBlock *cg, uint32_t cnt)
 {
-	//char *p = " ";
-	//printf("  Channel Group:\n");
-	//printf("    %d Channel        = 0x%llX\n", cnt, cg->getLink(M4CGBlock::cg_cn_first));
-	//M4TXBlock *tx = (M4TXBlock *)m4.LoadLink(*cg, M4CGBlock::cg_tx_acq_name);
-	//if (tx) {
-	//	p = GetString(tx);
-	//	delete tx;
-	//}
-	//printf("    Acquisition Name   = %s\n", p);
+	char *p = " ";
+	printf("  Channel Group:\n");
+	printf("    %d Channel        = 0x%llX\n", cnt, cg->getLink(M4CGBlock::cg_cn_first));
+	M4TXBlock *tx = (M4TXBlock *)m4.LoadLink(*cg, M4CGBlock::cg_tx_acq_name);
+	if (tx) {
+		p = GetString(tx);
+		delete tx;
+	}
+	printf("    Acquisition Name   = %s\n", p);
 
-	//p = " ";
-	//M4SIBlock *si = (M4SIBlock *)m4.LoadLink(*cg, M4CGBlock::cg_si_acq_source);
-	//if (si) {
-	//	tx = (M4TXBlock *)m4.LoadLink(*si, M4SIBlock::si_tx_name);
-	//	if (tx) {
-	//		p = GetString(tx);
-	//		delete tx;
-	//	}
-	//	delete si;
-	//}
-	//printf("    Acquisition Source = %s\n", p);
+	p = " ";
+	M4SIBlock *si = (M4SIBlock *)m4.LoadLink(*cg, M4CGBlock::cg_si_acq_source);
+	if (si) {
+		tx = (M4TXBlock *)m4.LoadLink(*si, M4SIBlock::si_tx_name);
+		if (tx) {
+			p = GetString(tx);
+			delete tx;
+		}
+		delete si;
+	}
+	printf("    Acquisition Source = %s\n", p);
 	printf("    Record ID          = %llu\n", cg->cg_record_id);
 	printf("    Cycle Count        = %llu\n", cg->cg_cycle_count);
 	printf("    Data Bytes         = %lu\n", cg->cg_data_bytes);
@@ -215,7 +127,6 @@ void DisplayChannel(MDF4File &m4, M4CNBlock *cn, int cnt)
 	printf("      Max Range Raw = %lf\n", cn->cn_val_range_max);
 }
 
-
 BOOL GetRecord(M4DGBlock *dg, M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1, M_UINT64 ix2)
 {
 	if (!dg || !cg) 
@@ -242,7 +153,6 @@ BOOL GetRecord(M4DGBlock *dg, M4CGBlock *cg, M_BYTE *ptr, M_UINT64 ix1, M_UINT64
 	
 	return TRUE;
 }
-
 
 double GetValueFromRecord(M_BYTE *dptr, int sbit, int nbit, int nbytes, BOOL bInteger, BOOL bSigned, BOOL bMotorola, BOOL bFloat)
 {
@@ -405,7 +315,6 @@ void DisplayData(M4DGBlock *dg, M4CGBlock *cg, M4CNBlock *cn)
 	}
 }
 
-
 void readMf4(char *filename) {
 
 	MDF4File m_m4;
@@ -442,9 +351,9 @@ void readMf4(char *filename) {
 			uint32_t cn_cnt = 0;
 			M4CNBlock *cn = (M4CNBlock *)m_m4.LoadLink(*cg, M4CGBlock::cg_cn_first, M4ID_CN);
 			while (cn) {
-				//DisplayChannel(m_m4, cn, ++cn_cnt);
+				DisplayChannel(m_m4, cn, ++cn_cnt);
 
-				//DisplayData(dg, cg, cn);
+				DisplayData(dg, cg, cn);
 				cn = (M4CNBlock *)m_m4.LoadLink(*cn, M4CNBlock::cn_cn_next, M4ID_CN);
 			}
 
@@ -466,21 +375,23 @@ int main(int argc, char *argv[])
 	_RWMDF mf4;
 	mf4.open(filename);
 
-	//// ID Block
-	//mdfFileId* pId = mf4.get_fid();
-	//printf("id_file  = %s\n", pId->id_file);
-	//printf("id_vers  = %s\n", pId->id_vers);
-	//printf("id_prog  = %s\n", pId->id_prog);
-	//printf("id_order = %s\n", pId->id_order == 0 ? "Intel" : "Motorola");
-	//printf("id_float = %s\n", pId->id_float == 0 ? "IEEE 754" : "(unsupported)");
-	//printf("id_ver   = %d\n", (int)pId->id_ver);
 
-	//// Show time: don't know how to handle local/GMT time under Linux
-	//M4HDBlock* pHdr = mf4.get_hdr();
-	//printf("Time: %d\n", (long)(pHdr->hd_start_time.time_ns / 1000000000));
+	// ID Block
+	mdfFileId* pId = mf4.get_fid();
+	printf("id_file  = %s\n", pId->id_file);
+	printf("id_vers  = %s\n", pId->id_vers);
+	printf("id_prog  = %s\n", pId->id_prog);
+	printf("id_order = %s\n", pId->id_order == 0 ? "Intel" : "Motorola");
+	printf("id_float = %s\n", pId->id_float == 0 ? "IEEE 754" : "(unsupported)");
+	printf("id_ver   = %d\n", (int)pId->id_ver);
 
-	//unsigned long cnt =  mf4.get_dgs().size();
-	//printf("Channel Count: %d\n",cnt);
+	// Show time: don't know how to handle local/GMT time under Linux
+	M4HDBlock* pHdr = mf4.get_hdr();
+	printf("Time: %d\n", (long)(pHdr->hd_start_time.time_ns / 1000000000));
+
+	unsigned long cnt =  mf4.get_dgs().size();
+	printf("Channel Count: %d\n",cnt);
+	printf("\n");
 
 	for (DG* dg : mf4.get_dgs()) {
 		MDF4File* m4file = dg->get_mdf4_file();
@@ -492,6 +403,7 @@ int main(int argc, char *argv[])
 			printf("    Cycle Count        = %llu\n", cgblk->cg_cycle_count);
 			printf("    Data Bytes         = %lu\n", cgblk->cg_data_bytes);
 			printf("    Invalid Bytes      = %lu\n", cgblk->cg_inval_bytes);
+			printf("\n");
 
 			for (CN* cn : cg->get_cns()) {
 
@@ -511,14 +423,19 @@ int main(int argc, char *argv[])
 				printf("      Inval. Bit Pos = %lu\n", cnblk->cn_inval_bit_pos);
 				printf("      Min Range Raw = %lf\n", cnblk->cn_val_range_min);
 				printf("      Max Range Raw = %lf\n", cnblk->cn_val_range_max);
+				printf("\n");
+
+				cn->get_value();
+
+				printf("\n");
+				
 			}
 		}
 	}
-
+	
 	mf4.clear_dgs();
+
 	//readMf4(filename);
 
 	return a.exec();
 }
-
-
